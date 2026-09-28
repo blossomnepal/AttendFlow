@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
-//Attendance rule: late if check-in is after 10:00 AM 
+
 const LATE_CUTOFF = '10:00 AM';
 
 function getStatus(checkInTime) {

@@ -5,7 +5,7 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [role, setRole] = useState('employee'); // toggle for testing admin vs employee UI
+  const [role, setRole] = useState('employee'); 
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
@@ -17,9 +17,9 @@ function Login() {
       return;
     }
 
-    // No real validation yet - backend will handle this later
+   
     if (role === 'admin') {
-      navigate('/admin-dashboard');
+      navigate('/admin/dashboard');
     } else {
       navigate('/employee-home');
     }
