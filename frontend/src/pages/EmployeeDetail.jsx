@@ -30,7 +30,6 @@ function EmployeeDetail() {
     return new Date(now.getFullYear(), now.getMonth(), 1);
   });
 
-  // Every day of the selected month with its status and hours
   const days = useMemo(() => {
     if (!employee) return [];
     const year = month.getFullYear();
