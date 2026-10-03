@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { formatDateKey } from '../data/attendanceData';
+import { getRedMarkLabel, getHolidayName } from '../data/holidays';
 
 const LATE_CUTOFF = '10:00 AM';
 
-function getStatus(checkInTime) {
+function getStatus(checkInTime, dateKey) {
+  if (getHolidayName(dateKey)) return 'holiday';
   if (!checkInTime) return 'absent';
   const cutoff = new Date(`2026-01-01 ${LATE_CUTOFF}`);
   const actual = new Date(`2026-01-01 ${checkInTime}`);
@@ -34,7 +36,7 @@ const rawAttendance = {
 const dummyAttendance = Object.fromEntries(
   Object.entries(rawAttendance).map(([date, record]) => [
     date,
-    { ...record, status: getStatus(record.checkIn) },
+    { ...record, status: getStatus(record.checkIn, date) },
   ])
 );
 
@@ -83,6 +85,7 @@ function EmployeeHome() {
     const key = formatDateKey(date);
     const today = formatDateKey(new Date()) === key;
     if (today) return 'calendar-today';
+    if (getRedMarkLabel(key, date)) return 'calendar-holiday';
     return null;
   };
 
@@ -163,7 +166,7 @@ function EmployeeHome() {
       </div>
 
       {/* Row 1: Today, Calendar, Summary */}
-      <div className="grid grid-cols-1 lg:grid-cols-[350px_1fr_1.5fr] gap-6 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr_1.5fr] gap-6 mb-6">
         {/* Today */}
         <div className={cardClass}>
           <h2 className="text-lg font-semibold mb-4 text-[#1a1a1a]">Today</h2>
@@ -246,10 +249,11 @@ function EmployeeHome() {
           <h2 className="text-lg font-semibold mb-4 text-[#1a1a1a]">Recent Activity</h2>
           <div className="flex flex-col divide-y divide-[#f3f4f6]">
             {recentActivity.map(([date, record]) => {
-              const status = getStatus(record.checkIn);
+              const status = getStatus(record.checkIn, date);
               const dotColor =
                 status === 'present' ? 'bg-[#16a34a]' :
-                status === 'late' ? 'bg-[#f59e0b]' : 'bg-[#dc2626]';
+                status === 'late' ? 'bg-[#f59e0b]' :
+                status === 'holiday' ? 'bg-[#dc2626]' : 'bg-[#dc2626]';
               return (
                 <div key={date} className="flex items-center justify-between py-2.5">
                   <div className="flex items-center gap-2">
@@ -337,7 +341,11 @@ function EmployeeHome() {
               <p className="text-sm text-[#9333EA] font-medium mb-1">Selected Date</p>
               <p className="text-lg font-semibold text-[#1a1a1a] mb-3">{selectedDayInfo.date}</p>
 
-              {!selectedDayInfo.hasRecord ? (
+              {getHolidayName(selectedDayInfo.date) ? (
+                <span className="inline-block px-3 py-1 rounded bg-[#fee2e2] text-[#dc2626] text-sm font-medium">
+                  {getHolidayName(selectedDayInfo.date)}
+                </span>
+              ) : !selectedDayInfo.hasRecord ? (
                 <span className="inline-block px-3 py-1 rounded bg-[#f3f4f6] text-[#6b7280] text-sm font-medium">
                   No Record
                 </span>

@@ -13,13 +13,18 @@ function Login() {
     e.preventDefault();
     setError('');
 
-    if (!name || !email || !password) {
+    if (role === 'employee' && !name) {
+      setError('Please fill in all fields');
+      return;
+    }
+    if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
 
-    
-    localStorage.setItem('userName', name);
+    if (role === 'employee') {
+      localStorage.setItem('userName', name);
+    }
     localStorage.setItem('userEmail', email);
 
     if (role === 'admin') {
@@ -37,13 +42,25 @@ function Login() {
 
           {error && <p className="text-[#dc2626] text-sm mb-4">{error}</p>}
 
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
             className="w-full mb-4 p-2 border rounded border-[#d1d5db]"
-          />
+          >
+            <option value="employee">Login as Employee</option>
+            <option value="admin">Login as Admin</option>
+          </select>
+
+          {role === 'employee' && (
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full mb-4 p-2 border rounded border-[#d1d5db]"
+            />
+          )}
+
           <input
             type="email"
             placeholder="Email"
@@ -56,17 +73,8 @@ function Login() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full mb-4 p-2 border rounded border-[#d1d5db]"
-          />
-
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
             className="w-full mb-6 p-2 border rounded border-[#d1d5db]"
-          >
-            <option value="employee">Login as Employee</option>
-            <option value="admin">Login as Admin</option>
-          </select>
+          />
 
           <button
             type="submit"

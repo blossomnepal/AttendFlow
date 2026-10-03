@@ -7,8 +7,9 @@ const cellStyles = {
   present: 'bg-[#dcfce7] text-[#16a34a]',
   late: 'bg-[#fef3c7] text-[#f59e0b]',
   leave: 'bg-[#f3e8ff] text-[#9333EA]',
+  holiday: 'bg-[#fee2e2] text-[#dc2626]',
   absent: 'bg-[#fee2e2] text-[#dc2626]',
-  weekend: 'bg-[#f9fafb] text-[#9ca3af]',
+  weekend: 'bg-[#fee2e2] text-[#dc2626]',
   upcoming: 'bg-[#f9fafb] text-[#9ca3af]',
 };
 
@@ -16,6 +17,7 @@ const labels = {
   present: 'Present',
   late: 'Late',
   leave: 'Leave',
+  holiday: 'Holiday',
   absent: 'Absent',
 };
 
@@ -62,8 +64,8 @@ function EmployeeDetail() {
   };
 
   const monthLabel = month.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-  const firstDayOffset = (new Date(month.getFullYear(), month.getMonth(), 1).getDay() + 6) % 7; // Monday first
-  const workedDays = days.filter((d) => !['weekend', 'upcoming'].includes(d.status));
+  const firstDayOffset = (new Date(month.getFullYear(), month.getMonth(), 1).getDay() + 6) % 7;
+  const workedDays = days.filter((d) => !['weekend', 'upcoming', 'holiday'].includes(d.status));
 
   const changeMonth = (step) =>
     setMonth(new Date(month.getFullYear(), month.getMonth() + step, 1));
@@ -77,7 +79,6 @@ function EmployeeDetail() {
         ← Back to employees
       </button>
 
-      {/* Employee header */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[#1a1a1a]">{employee.name}</h1>
@@ -104,7 +105,6 @@ function EmployeeDetail() {
         </div>
       </div>
 
-      {/* Monthly summary */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
         <div className="bg-white p-5 rounded-lg shadow-md">
           <p className="text-sm text-[#6b7280] mb-1">Present</p>
@@ -128,7 +128,6 @@ function EmployeeDetail() {
         </div>
       </div>
 
-      {/* Month calendar */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-[#1a1a1a]">{monthLabel}</h2>
@@ -160,7 +159,6 @@ function EmployeeDetail() {
           ))}
         </div>
 
-        {/* Legend */}
         <div className="flex flex-wrap gap-4 mt-4 text-xs text-[#6b7280]">
           {Object.entries(labels).map(([key, label]) => (
             <span key={key} className="flex items-center gap-1">
@@ -171,7 +169,6 @@ function EmployeeDetail() {
         </div>
       </div>
 
-      {/* Daily list */}
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-lg font-semibold mb-4 text-[#1a1a1a]">Daily Record</h2>
         <div className="overflow-x-auto">

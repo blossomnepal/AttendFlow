@@ -1,6 +1,7 @@
+import { getHolidayName } from './holidays';
+
 export const LATE_CUTOFF = '10:00 AM';
 
-// Local date parts (toISOString shifts the date by a day in Nepal's timezone)
 export function formatDateKey(date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -19,8 +20,9 @@ export function calcHours(checkIn, checkOut) {
   return (outTime - inTime) / 1000 / 60 / 60;
 }
 
-// Status of one day: present, late, leave, absent, weekend or upcoming
 export function getDayStatus(date, record) {
+  const key = formatDateKey(date);
+  if (getHolidayName(key)) return 'holiday';
   if (record?.leave) return 'leave';
   if (record?.checkIn) {
     const cutoff = new Date(`2026-01-01 ${LATE_CUTOFF}`);
@@ -35,7 +37,6 @@ export function getDayStatus(date, record) {
   return 'absent';
 }
 
-// Temporary sample data for September 2026 
 function generateSample(offset) {
   const patterns = [
     { checkIn: '09:00 AM', checkOut: '05:00 PM' },
@@ -44,7 +45,7 @@ function generateSample(offset) {
     { checkIn: '08:55 AM', checkOut: '05:05 PM' },
     { leave: true },
     { checkIn: '09:30 AM', checkOut: '06:15 PM' },
-    null, // no record = absent
+    null,
     { checkIn: '09:05 AM', checkOut: '05:10 PM' },
   ];
   const data = {};

@@ -3,3 +3,10 @@
 body {
   font-family: 'Poppins', sans-serif;
 }
+
+.calendar-holiday {
+  background-color: #fee2e2 !important;
+  color: #dc2626 !important;
+  font-weight: 600;
+  border-radius: 6px;
+}
